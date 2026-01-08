@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Académico 2026 - Escuela de Jueces del Estado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #1a3a5a; --secondary: #c5a059; --bg: #f8f9fa; --white: #ffffff; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; display: flex; background: var(--bg); color: #333; }
+        
+        /* Sidebar */
+        nav { width: 300px; background: var(--primary); color: white; height: 100vh; position: fixed; overflow-y: auto; z-index: 1000; }
+        nav h2 { font-size: 0.85rem; text-align: center; color: var(--secondary); padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin: 0; }
+        nav ul { list-style: none; padding: 0; margin: 0; }
+        nav ul li a { display: block; padding: 15px 20px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; cursor: pointer; transition: 0.3s; }
+        nav ul li a:hover { background: var(--secondary); color: var(--primary); font-weight: bold; }
+
+        /* Main Content */
+        main { margin-left: 300px; padding: 40px; width: calc(100% - 300px); box-sizing: border-box; }
+        .header { margin-bottom: 30px; border-left: 5px solid var(--secondary); padding-left: 15px; }
+        .header h1 { color: var(--primary); font-size: 1.8rem; margin: 0; }
+
+        /* Search Bar */
+        .search-container { position: sticky; top: 0; background: var(--bg); padding: 15px 0; z-index: 100; }
+        #globalSearch { 
+            width: 100%; padding: 15px 25px; border-radius: 30px; border: 2px solid var(--primary); 
+            font-size: 1rem; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Course Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .card { 
+            background: white; border-radius: 10px; padding: 20px; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; border-top: 4px solid var(--secondary);
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .card small { color: #666; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .card h3 { color: var(--primary); margin: 0 0 15px 0; font-size: 0.95rem; line-height: 1.4; flex-grow: 1; }
+        .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { background: #f1f1f1; padding: 4px 10px; border-radius: 15px; font-size: 0.65rem; font-weight: bold; color: #555; }
+
+        /* Modal Details */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 90%; max-width: 800px; border-radius: 15px; padding: 30px; position: relative; max-height: 85vh; overflow-y: auto; }
+        .close { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #999; }
+        .m-header { border-bottom: 2px solid var(--secondary); margin-bottom: 20px; }
+        .m-header h2 { color: var(--primary); font-size: 1.3rem; margin-top: 0; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .info-item b { display: block; color: var(--secondary); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 3px; }
+        .info-item span { font-size: 0.9rem; line-height: 1.4; }
+        .full-width { grid-column: 1 / -1; }
+
+        @media (max-width: 768px) {
+            nav { width: 100%; height: auto; position: relative; }
+            main { margin-left: 0; width: 100%; padding: 20px; }
+            body { flex-direction: column; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>PLAN ANUAL DE CAPACITACIÓN 2026</h2>
+    <ul>
+        <li><a onclick="filterByMat('all')">VER TODOS LOS CURSOS</a></li>
+        <li><a onclick="filterByMat('CONSTITUCIONAL')">MATERIA CONSTITUCIONAL</a></li>
+        <li><a onclick="filterByMat('PENAL')">MATERIA PENAL</a></li>
+        <li><a onclick="filterByMat('LABORAL')">MATERIA LABORAL</a></li>
+        <li><a onclick="filterByMat('COACTIVO FISCAL')">MATERIA COACTIVO FISCAL</a></li>
+        <li><a onclick="filterByMat('FAMILIAR')">MATERIA FAMILIAR</a></li>
+        <li><a onclick="filterByMat('CIVIL')">MATERIA CIVIL</a></li>
+        <li><a onclick="filterByMat('AGROAMBIENTAL')">MATERIA AGROAMBIENTAL</a></li>
+        <li><a onclick="filterByMat('NIÑEZ')">MATERIA NIÑEZ Y ADOLESCENCIA</a></li>
+        <li><a onclick="filterByMat('APOYO')">APOYO JUDICIAL Y ADMINISTRATIVO</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div class="header">
+        <h1>Oferta Académica Gestión 2026</h1>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="globalSearch" placeholder="🔍 Busque por: Título, Plataforma (Zoom, Moodle), Carácter (Obligatorio, Voluntario), Mes o Destinatario..." onkeyup="search()">
+    </div>
+
+    <div id="courseGrid" class="grid"></div>
+</main>
+
+<div id="courseModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="m-header"><h2 id="mT"></h2></div>
+        <div class="info-grid" id="mB"></div>
+    </div>
+</div>
+
+<script>
+    // LISTA COMPLETA DE CURSOS EXTRAÍDA FIELMENTE DEL DOCUMENTO WORD
+    const courses = [
+        // CONSTITUCIONAL
+        { m: "CONSTITUCIONAL", t: "CONFERENCIA: ACOSO Y VIOLENCIA POLÍTICA HACIA LAS MUJERES", mod: "Virtual", f: "Marzo 2026", h: "2 horas", p: "Facebook y YouTube", c: "Matriculación voluntaria y abierta", e: "Evaluación de satisfacción", d: "Autoridades jurisdiccionales, personal de apoyo y público general." },
+        { m: "CONSTITUCIONAL", t: "CONFERENCIA: ACCESO A LA JUSTICIA DE GRUPOS VULNERABLES Y DE ATENCIÓN PRIORITARIA. OBLIGACIÓN CONSTITUCIONAL Y CONVENCIONAL", mod: "Virtual", f: "Mayo 2026", h: "8 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de satisfacción", d: "Vocales y Jueces de todas las materias." },
+        { m: "CONSTITUCIONAL", t: "CONFERENCIA: ACTOS LESIVOS EN LAS ACCIONES TUTELARES", mod: "Virtual", f: "Agosto 2026", h: "2 horas", p: "Facebook y YouTube", c: "Matriculación voluntaria y abierta", e: "Evaluación de satisfacción", d: "Comunidad jurídica nacional." },
+        { m: "CONSTITUCIONAL", t: "CONFERENCIA: LA ÉTICA JUDICIAL COMO COMPONENTE DE LA APLICACIÓN DE LA INTELIGENCIA ARTIFICAL EN LA ADMINISTRACIÓN DE JUSTICIA", mod: "Virtual", f: "Noviembre 2026", h: "4 horas", p: "Facebook y YouTube", c: "Matriculación voluntaria y abierta", e: "Evaluación de satisfacción", d: "Vocales, Jueces y personal de apoyo del Órgano Judicial." },
+
+        // PENAL
+        { m: "PENAL", t: "LEY N° 1636 - APLICACIÓN JURISDICCIONAL DE TEORÍA DEL DELITO con ENFOQUE EN DERECHOS HUMANOS", mod: "Semipresencial", f: "Marzo - Mayo 2026", h: "40 Horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje y de satisfacción", d: "Vocales, Jueces de Instrucción Penal, Jueces de sentencia y Tribunales de Sentencia." },
+        { m: "PENAL", t: "CRIMEN ORGANIZADO EN EL NUEVO CONTEXTO NACIONAL", mod: "Semipresencial", f: "Junio - Julio 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje y de satisfacción", d: "Vocales, Jueces de instrucción penal, jueces de sentencia, Tribunales en materia Penal." },
+        { m: "PENAL", t: "JURISDICCIÓN PENAL EN LA LUCHA CONTRA LA CORRUPCIÓN", mod: "Semipresencial", f: "Septiembre - Noviembre 2026", h: "40 Horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje y de satisfacción", d: "Vocales, Jueces de Instrucción Penal, Jueces de sentencia y Tribunales de Sentencia." },
+        { m: "PENAL", t: "CONFERENCIA: AUTONOMÍA DEL DELITO DE LEGITIMACIÓN DE GANANCIAS ILÍCITAS", mod: "Virtual", f: "Octubre 2026", h: "4 horas", p: "Facebook y YouTube", c: "Voluntario", e: "Evaluación de satisfacción", d: "Vocales, jueces, personal de apoyo y comunidad jurídica." },
+
+        // LABORAL
+        { m: "LABORAL", t: "INTERPRETACIÓN, APLICACIÓN Y EJECUCIÓN DE LAS LEYES N° 1468, N° 321 Y DECRETO SUPREMO N° 28699 EN PROCESOS DE RESTITUCIÓN DE DERECHOS LABORALES", mod: "Semipresencial", f: "Agosto - Septiembre 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Aprendizaje y satisfacción", d: "Vocales de Sala Social, Jueces de Partido del Trabajo y Seguridad Social y Mixtos." },
+        { m: "LABORAL", t: "CONVERSATORIO: PROBLEMÁTICA EN LA APLICACIÓN DEL PROCEDIMIENTO EN PROCESOS POR INFRACCIÓN A LEYES SOCIALES", mod: "Virtual", f: "Septiembre 2026", h: "4 horas", p: "Moodle y Zoom", c: "Voluntario", e: "Evaluación de satisfacción", d: "Personal judicial con competencia en materia laboral." },
+
+        // COACTIVO FISCAL
+        { m: "COACTIVO FISCAL", t: "VALORACIÓN DE LA PRUEBA EN EL PROCESO COACTIVO FISCAL", mod: "Virtual", f: "Marzo - Abril 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Aprendizaje y satisfacción", d: "Vocales de Sala Social y Administrativa, Jueces de Partido con competencia en materia Coactivo Fiscal." },
+
+        // FAMILIAR
+        { m: "FAMILIAR", t: "ACTOS DE COMUNICACIÓN EN LOS PROCESOS FAMILIARES: SUS PROCEDIMIENTOS, CONTROL DE LEGALIDAD DEL MANDAMIENTO DE APREMIO Y JURISPRUDENCIA CONSTITUCIONAL RELEVANTE", mod: "Semipresencial", f: "Agosto - Septiembre 2026", h: "40 horas", p: "Moodle y Sesiones Presenciales", c: "Obligatorio", e: "Aprendizaje y satisfacción", d: "Vocales y Jueces en Materia Familiar y Mixtos." },
+        { m: "FAMILIAR", t: "CONFERENCIA: CONTROL JUDICIAL DE LA PRUEBA PSICOSOCIAL Y LA PONDERACIÓN EN PROCESOS DE GUARDA EN DESVINCULACION FAMILIAR", mod: "Virtual", f: "Septiembre 2026", h: "4 horas", p: "Facebook y YouTube", c: "Voluntario", e: "Evaluación de satisfacción", d: "Vocales, Jueces y personal de apoyo de materia Familiar." },
+
+        // CIVIL
+        { m: "CIVIL", t: "LA USUCAPIÓN COMO MECANISMO DE ADQUISICIÓN DEL DERECHO PROPIETARIO", mod: "Virtual", f: "Abril - Mayo 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Vocales, Jueces con competencia en materia Civil." },
+        { m: "CIVIL", t: "EL PROCESO DE EJECUCIÓN CIVIL: DE LA SENTENCIA A LA REALIDAD", mod: "Semipresencial", f: "Septiembre - Octubre 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Vocales, Jueces con competencia en materia Civil." },
+        { m: "CIVIL", t: "CONFERENCIA: EL DERECHO REGISTRAL Y SU INCIDENCIA EN LA FUNCIÓN JURISDICCIONAL", mod: "Virtual", f: "Junio 2026", h: "4 horas", p: "Facebook y YouTube", c: "Voluntario", e: "Evaluación de satisfacción", d: "Servidores judiciales y comunidad jurídica." },
+
+        // AGROAMBIENTAL
+        { m: "AGROAMBIENTAL", t: "EL PERITAJE SOCIO AMBIENTAL COMO PRUEBA CLAVE EN EL PROCESO Y LA REPARACIÓN INTEGRAL POR DAÑO AMBIENTAL", mod: "Semipresencial", f: "Marzo - Abril 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Juezas y jueces y personal técnico de juzgados agroambientales." },
+        { m: "AGROAMBIENTAL", t: "PROCESOS Y PROCEDIMIENTOS AMBIENTALES DENTRO DE LA JURISDICCIÓN AGROAMBIENTAL", mod: "Semipresencial", f: "Agosto 2026", h: "40 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Aprendizaje y satisfacción", d: "Jueces, juezas y servidores del Tribunal Agroambiental." },
+        { m: "AGROAMBIENTAL", t: "CONFERENCIA: TRATAMIENTO JURÍDICO A LA PROBLEMÁTICA DE LOS RELLENOS SANITARIOS", mod: "Virtual", f: "Junio 2026", h: "2 Horas", p: "Facebook y YouTube", c: "Matriculación voluntaria y abierta", e: "Evaluación de satisfacción", d: "Autoridades agroambientales y público en general." },
+        { m: "AGROAMBIENTAL", t: "TALLER: FLEXIBILIZACIÓN DE FORMALIDADES PROCESALES PARA GARANTIZAR EL ACCESO EFECTIVO A LA JUSTICIA AGROAMBIENTAL POR PARTE DE LAS NACIONES Y PUEBLOS INDÍGENA ORIGINARIO CAMPESINO", mod: "Semipresencial", f: "Julio 2026", h: "12 horas", p: "Moodle y Presencial", c: "Obligatorio", e: "Satisfacción", d: "Jueces y personal técnico agroambiental." },
+
+        // NIÑEZ Y ADOLESCENCIA
+        { m: "NIÑEZ Y ADOLESCENCIA", t: "TUTELA JUDICIAL Y PROTECCIÓN REFORZADA PARA HIJAS E HIJOS HUÉRFANOS, VÍCTIMAS DE FEMINICIDIO Y OTROS DELITOS CONTRA LA VIDA (Ley 1680)", mod: "Semipresencial", f: "Junio - Julio 2026", h: "60 horas", p: "Moodle y Zoom", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Vocales y Jueces Públicos con competencia en niñez y adolescencia." },
+        { m: "NIÑEZ Y ADOLESCENCIA", t: "CONFERENCIA: JUSTICIA PENAL JUVENIL - EJECUCION DE MEDIDAS SOCIOEDUCATIVAS", mod: "Virtual", f: "Agosto 2026", h: "2 horas", p: "Facebook y YouTube", c: "Matriculación voluntaria y abierta", e: "Evaluación de satisfacción", d: "Personal judicial y comunidad jurídica." },
+        { m: "NIÑEZ Y ADOLESCENCIA", t: "CONFERENCIA: TUTELA JUDICIAL Y SISTEMA DE PROTECCIÓN A NIÑAS, NIÑOS Y ADOLESCENTES", mod: "Virtual", f: "Septiembre 2026", h: "4 horas", p: "Moodle y Zoom", c: "Voluntario", e: "Satisfacción", d: "Jueces de niñez y adolescencia." },
+        { m: "NIÑEZ Y ADOLESCENCIA", t: "CONVERSATORIO: LA PONDERACION DEL INTERES SUPERIOR DEL NIÑO VICTIMA Y DEL ADOLESCENTE EN CONFLICTO CON LA LEY", mod: "Semipresencial", f: "Octubre 2026", h: "12 horas", p: "Moodle y Presencial", c: "Obligatorio", e: "Aprendizaje", d: "Vocales y Jueces de niñez y adolescencia." },
+
+        // APOYO JUDICIAL
+        { m: "APOYO", t: "CURSO AUTOFORMATIVO DE INDUCCIÓN PARA SERVIDORES/AS DE DERECHOS REALES", mod: "Virtual, autoformativo", f: "Disponibilidad permanente", h: "40 horas", p: "Moodle", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Servidores de Derechos Reales de reciente designación." },
+        { m: "APOYO", t: "CURSO AUTOFORMATIVO DE INDUCCIÓN PARA PERSONAL DESIGNADO A LA OFICINA GESTORA DE PROCESOS", mod: "Semipresencial, autoformativo", f: "Disponibilidad permanente", h: "100 horas", p: "Moodle", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Personal designado a las Oficinas Gestoras de Procesos." },
+        { m: "APOYO", t: "CURSO AUTOFORMATIVO DE INDUCCIÓN PARA PERSONAL DE APOYO JUDICIAL – ÁREA ORDINARIA Y AGROAMBIENTAL", mod: "Virtual", f: "Disponibilidad permanente", h: "40 horas", p: "Moodle", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Secretarios, Auxiliares y Oficiales de Diligencia." },
+        { m: "APOYO", t: "CURSO AUTOFORMATIVO DE INDUCCIÓN ETICA E INTEGRIDAD", mod: "Semipresencial, autoformativo", f: "Disponibilidad permanente", h: "40 horas", p: "Moodle", c: "Obligatorio", e: "Evaluación de aprendizaje", d: "Vocales, juezas y jueces a nivel nacional." },
+        { m: "APOYO", t: "CURSO AUTOFORMATIVO DE INDUCCIÓN EN DERECHOS HUMANOS Y PERSPECTIVA DE GENERO", mod: "Virtual", f: "Disponibilidad permanente", h: "40 horas", p: "Moodle", c: "Obligatorio", e: "Aprendizaje", d: "Todo el personal judicial." }
+    ];
+
+    function render(data) {
+        const grid = document.getElementById('courseGrid');
+        grid.innerHTML = "";
+        data.forEach(c => {
+            const card = document.createElement('div');
+            card.className = "card";
+            card.onclick = () => openModal(c);
+            card.innerHTML = `
+                <small>${c.m}</small>
+                <h3>${c.t}</h3>
+                <div class="tags">
+                    <span class="tag">${c.mod}</span>
+                    <span class="tag">${c.c.toUpperCase()}</span>
+                    <span class="tag">${c.p.split(' ')[0]}</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function search() {
+        const term = document.getElementById('globalSearch').value.toLowerCase();
+        const filtered = courses.filter(c => 
+            Object.values(c).some(val => String(val).toLowerCase().includes(term))
+        );
+        render(filtered);
+    }
+
+    function filterByMat(m) {
+        if(m === 'all') return render(courses);
+        render(courses.filter(c => c.m.includes(m)));
+    }
+
+    function openModal(c) {
+        document.getElementById('mT').innerText = c.t;
+        document.getElementById('mB').innerHTML = `
+            <div class="info-item"><b>Materia</b><span>${c.m}</span></div>
+            <div class="info-item"><b>Modalidad</b><span>${c.mod}</span></div>
+            <div class="info-item"><b>Fecha</b><span>${c.f}</span></div>
+            <div class="info-item"><b>Carga Horaria</b><span>${c.h}</span></div>
+            <div class="info-item"><b>Plataformas</b><span>${c.p}</span></div>
+            <div class="info-item"><b>Carácter</b><span>${c.c}</span></div>
+            <div class="info-item"><b>Evaluación</b><span>${c.e}</span></div>
+            <div class="info-item full-width"><b>Dirigido a</b><span>${c.d}</span></div>
+        `;
+        document.getElementById('courseModal').style.display = "flex";
+    }
+
+    function closeModal() { document.getElementById('courseModal').style.display = "none"; }
+    window.onclick = (e) => { if(e.target.id === 'courseModal') closeModal(); }
+
+    render(courses);
+</script>
+</body>
+</html>
