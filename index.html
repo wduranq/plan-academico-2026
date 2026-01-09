@@ -136,7 +136,62 @@
         .modal-item div { font-size: 0.95rem; color: #333; line-height: 1.4; }
 
         @media (max-width: 900px) { nav { width: 100%; height: auto; position: relative; } main { margin-left: 0; } body { flex-direction: column; } }
-    </style>
+    
+	/* Estilos de etiquetas automáticas */
+.badge-auto {
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+/* Colores por tipo */
+.bg-conferencia { background-color: #d35400; } /* Naranja: Cortos */
+.bg-curso { background-color: #1a5276; }       /* Azul: Largos */
+.bg-induccion { background-color: #27ae60; }   /* Verde: Autoformativos */
+	
+/* Ajuste de tarjetas con borde lateral dinámico */
+.card { 
+    position: relative; /* Para posicionar el indicador */
+    background: var(--white); 
+    padding: 20px 25px 25px 35px; /* Más espacio a la izquierda para el borde */
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+    cursor: pointer; 
+    border-top: none; /* Quitamos el borde gris de arriba */
+    border-left: 6px solid #ccc; /* Borde lateral por defecto */
+    transition: 0.3s; 
+}
+
+/* Colores de los bordes laterales */
+.border-conferencia { border-left-color: #d35400 !important; } /* Naranja */
+.border-curso { border-left-color: #1a5276 !important; }       /* Azul */
+.border-induccion { border-left-color: #27ae60 !important; }   /* Verde */
+
+/* Estilo para el texto pequeño del tipo de curso */
+.tipo-mini {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.card-label { 
+    font-size: 0.7rem; 
+    color: var(--eje-red); 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    margin-bottom: 5px; 
+    display: block; 
+}
+	
+	</style>
 </head>
 <body>
 
@@ -692,7 +747,7 @@ const data = [
 
     const meses = ["Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Permanente"];
 
-    function renderCards(items) {
+    function renderCards1(items) {
         const container = document.getElementById('grid-container');
         container.innerHTML = "";
         items.forEach(c => {
@@ -703,22 +758,70 @@ const data = [
             container.appendChild(div);
         });
     }
+	
+	function renderCards(items) {
+    const container = document.getElementById('grid-container');
+    container.innerHTML = "";
+    items.forEach(c => {
+        // Lógica de clasificación automática mejorada
+        let tipoTexto = "CURSO";
+        let claseBorde = "border-curso";
+        
+        // Extraemos solo el número de la carga horaria (ej: "40 horas" -> 40)
+        const horas = parseInt(c.h.replace(/\D/g, "")) || 0;
 
-    function renderTimeline(items) {
-        const container = document.getElementById('timeline-container');
-        container.innerHTML = "";
-        meses.forEach(mes => {
-            const filtered = items.filter(c => c.mes === mes);
-            if(filtered.length > 0) {
-                let html = `<div class="month-block"><span class="month-name">${mes}</span>`;
-                filtered.forEach(c => {
-                    html += `<div class="tl-card" onclick='openModal(${JSON.stringify(c)})'><b>${c.m}:</b> ${c.t}</div>`;
-                });
-                html += `</div>`;
-                container.innerHTML += html;
-            }
-        });
-    }
+        if (c.t.toLowerCase().includes("inducción") || c.f.toLowerCase().includes("permanente")) {
+            tipoTexto = "AUTOFORMATIVO";
+            claseBorde = "border-induccion";
+        } else if (horas > 0 && horas <= 8) { // Cambiado a menores de 8 horas
+            tipoTexto = "CONFERENCIA / TALLER";
+            claseBorde = "border-conferencia";
+        }
+
+        const div = document.createElement('div');
+        div.className = `card ${claseBorde}`; // Aplicamos el color al borde izquierdo
+        div.onclick = () => openModal(c);
+        div.innerHTML = `
+            <span class="tipo-mini">${tipoTexto}</span>
+            <span class="card-label">${c.m}</span>
+            <h3>${c.t}</h3>
+            <div class="card-meta">
+                <div>📅 ${c.f}</div>
+                <div>⏳ ${c.h}</div>
+                <div>📍 ${c.mod}</div>
+                <div>💻 ${c.p}</div>
+            </div>`;
+        container.appendChild(div);
+    });
+}
+
+	
+	
+	function renderTimeline(items) {
+    const container = document.getElementById('timeline-container');
+    container.innerHTML = "";
+    meses.forEach(mes => {
+        const filtered = items.filter(c => c.mes === mes);
+        if(filtered.length > 0) {
+            const block = document.createElement('div');
+            block.className = 'month-block';
+            block.innerHTML = `<span class="month-name">${mes}</span>`;
+            
+            filtered.forEach(c => {
+                const horas = parseInt(c.h.replace(/\D/g, "")) || 0;
+                let claseBorde = (horas > 0 && horas <= 8) ? "border-conferencia" : "border-curso";
+                if(c.f.toLowerCase().includes("permanente")) claseBorde = "border-induccion";
+
+                const tlCard = document.createElement('div');
+                tlCard.className = `tl-card ${claseBorde}`; // Mismo borde que en las cards
+                tlCard.onclick = () => openModal(c);
+                tlCard.innerHTML = `<b>${c.m}:</b> ${c.t} <br> <small>⏳ ${c.h}</small>`;
+                block.appendChild(tlCard);
+            });
+            container.appendChild(block);
+        }
+    });
+}
 
     function openModal(c) {
         document.getElementById('mTitle').innerText = c.t;
@@ -855,4 +958,3 @@ const data = [
 
 </body>
 </html>
-
